@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <launch>
     <!-- <args for urdf/> -->
-    <arg name="camera_model"          default="OAK-D"           /> <!-- 'zed' or 'zedm' -->
+    <arg name="camera_model"          default="OAK-D-S2"           /> <!-- 'zed' or 'zedm' -->
     <arg name="tf_prefix"             default="oak"             />
     <arg name="base_frame"            default="oak-d_frame"     />
     <arg name="parent_frame"          default="oak-d-base-frame"/>
-    
+
     <arg name="cam_pos_x"             default="0.0"             /> <!-- Position respect to base frame (i.e. "base_link) -->
     <arg name="cam_pos_y"             default="0.0"             /> <!-- Position respect to base frame (i.e. "base_link) -->
     <arg name="cam_pos_z"             default="0.0"             /> <!-- Position respect to base frame (i.e. "base_link) -->
@@ -32,12 +32,12 @@
     <node name="rgb_publisher" pkg="depthai_examples" type="rgb_node" output="screen" required="true">
         <param name="tf_prefix"        value="$(arg tf_prefix)"/>
         <param name="camera_param_uri" value="$(arg camera_param_uri)"/>
-    </node>            
-    
+    </node>
+
     <!-- <node name="rgb_subscriber" pkg="depthai_examples" type="rgb_subscriber_node" output="screen" required="true">
         <remap from="rgb_image" to="/rgb_publisher/color/image"/>
     </node>             -->
-    
+
 
 rgb_subscriber_node
 </launch>
