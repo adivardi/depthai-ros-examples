@@ -33,6 +33,7 @@ dai::Pipeline createPipeline() {
     // THE_1080_P: image_height: 1080 image_width: 1920
     colorCam->setInterleaved(false);
     colorCam->setFps(60);
+
     std::cout << "res: " << colorCam->getResolutionWidth() << " " << colorCam->getResolutionHeight() << std::endl;
     std::cout << "fps: " << colorCam->getFps() << std::endl;
 
@@ -102,7 +103,7 @@ int main(int argc, char** argv) {
         "\n*   'B' - auto white-balance";
 
     // defaults
-    int expTime = 6000;
+    int expTime = 100;
     int expMin = 1;
     int expMax = 33000;
 
@@ -131,7 +132,7 @@ int main(int argc, char** argv) {
     int autoExpCompMin = -9;
     int autoExpCompMax = 9;
 
-    static constexpr int EXP_STEP = 500;  // us
+    static constexpr int EXP_STEP = 20;  // us
     static constexpr int ISO_STEP = 50;
     static constexpr int WB_STEP = 200;
     static constexpr int GENERAL_STEP = 1;
@@ -146,10 +147,18 @@ int main(int argc, char** argv) {
     //     ctrl.setManualExposure(1000, sensIso);
     //     controlQueue->send(ctrl);
     // }
-    // printf("Autoexposure enable\n");
-    // dai::CameraControl ctrl;
-    // ctrl.setAutoExposureEnable();
-    // controlQueue->send(ctrl);
+
+    printf("Autoexposure enable\n");
+    ROS_INFO_STREAM("Autoexposure enable");
+    dai::CameraControl ctrl;
+    ctrl.setAutoExposureEnable();
+    controlQueue->send(ctrl);
+
+    int default_saturation = 7;
+    printf("Setting manual saturation: %d \n", default_saturation);
+    ROS_INFO_STREAM("Setting manual saturation: " << default_saturation);
+    ctrl.setSaturation(default_saturation);
+    controlQueue->send(ctrl);
 
     // printf("Auto white-balance enable\n");
     // dai::CameraControl ctrl;
@@ -178,11 +187,13 @@ int main(int argc, char** argv) {
 
             if(key == 'e') {
                 printf("Autoexposure enable\n");
+                ROS_INFO_STREAM("Autoexposure enable\n");
                 dai::CameraControl ctrl;
                 ctrl.setAutoExposureEnable();
                 controlQueue->send(ctrl);
             } else if(key == 'b') {
                 printf("Auto white-balance enable\n");
+                ROS_INFO_STREAM("Auto white-balance enable\n");
                 dai::CameraControl ctrl;
                 ctrl.setAutoWhiteBalanceMode(dai::CameraControl::AutoWhiteBalanceMode::AUTO);
                 controlQueue->send(ctrl);
@@ -194,6 +205,7 @@ int main(int argc, char** argv) {
                 expTime = std::max(expMin, std::min(expTime, expMax));
                 sensIso = std::max(sensMin, std::min(sensIso, sensMax));
                 printf("Setting manual exposure, time: %d, iso: %d\n", expTime, sensIso);
+                ROS_INFO_STREAM("Setting manual exposure, time: " << expTime << " iso: " << sensIso << "\n");
                 dai::CameraControl ctrl;
                 ctrl.setManualExposure(expTime, sensIso);
                 controlQueue->send(ctrl);
@@ -202,6 +214,7 @@ int main(int argc, char** argv) {
                 if(key == ']') wbManual += WB_STEP;
                 wbManual = std::max(wbMin, std::min(wbManual, wbMax));
                 printf("Setting manual white balance, temperature: %d K\n", wbManual);
+                ROS_INFO_STREAM("Setting manual white balance, temperature: " << wbManual << " K\n");
                 dai::CameraControl ctrl;
                 ctrl.setManualWhiteBalance(wbManual);
                 controlQueue->send(ctrl);
@@ -210,6 +223,7 @@ int main(int argc, char** argv) {
                 if(key == 'u') brightness += GENERAL_STEP;
                 brightness = std::max(brightnessMin, std::min(brightness, brightnessMax));
                 printf("Setting manual brightness: %d \n", brightness);
+                ROS_INFO_STREAM("Setting manual brightness: " << brightness << " \n");
                 dai::CameraControl ctrl;
                 ctrl.setBrightness(brightness);
                 controlQueue->send(ctrl);
@@ -218,6 +232,7 @@ int main(int argc, char** argv) {
                 if(key == 'j') contrast += GENERAL_STEP;
                 contrast = std::max(contrastMin, std::min(contrast, contrastMax));
                 printf("Setting manual contrast: %d \n", contrast);
+                ROS_INFO_STREAM("Setting manual contrast: " << contrast << " \n");
                 dai::CameraControl ctrl;
                 ctrl.setContrast(contrast);
                 controlQueue->send(ctrl);
@@ -226,6 +241,7 @@ int main(int argc, char** argv) {
                 if(key == 'm') saturation += GENERAL_STEP;
                 saturation = std::max(saturationMin, std::min(saturation, saturationMax));
                 printf("Setting manual saturation: %d \n", saturation);
+                ROS_INFO_STREAM("Setting manual saturation: " << saturation << " \n");
                 dai::CameraControl ctrl;
                 ctrl.setSaturation(saturation);
                 controlQueue->send(ctrl);
@@ -234,6 +250,7 @@ int main(int argc, char** argv) {
                 if(key == 't') sharpness += GENERAL_STEP;
                 sharpness = std::max(saturationMin, std::min(sharpness, saturationMax));
                 printf("Setting manual sharpness: %d \n", sharpness);
+                ROS_INFO_STREAM("Setting manual sharpness: " << sharpness << " \n");
                 dai::CameraControl ctrl;
                 ctrl.setSharpness(sharpness);
                 controlQueue->send(ctrl);
@@ -242,6 +259,7 @@ int main(int argc, char** argv) {
                 if(key == 'g') autoExpComp += GENERAL_STEP;
                 autoExpComp = std::max(saturationMin, std::min(autoExpComp, saturationMax));
                 printf("Setting manual autoExpComp: %d \n", autoExpComp);
+                ROS_INFO_STREAM("Setting manual autoExpComp: " << autoExpComp << " \n");
                 dai::CameraControl ctrl;
                 ctrl.setAutoExposureCompensation(autoExpComp);
                 controlQueue->send(ctrl);
